@@ -1,5 +1,7 @@
 # Portfolio Optimization and VaR Risk Engine
 
+![Language](https://img.shields.io/badge/Language-Python-blue) ![Topic](https://img.shields.io/badge/Topic-Portfolio%20Optimization-purple) ![Domain](https://img.shields.io/badge/Domain-Quantitative%20Finance-darkblue) ![Methods](https://img.shields.io/badge/Methods-Markowitz%20%7C%20Historical%20VaR%20%7C%20Parametric%20VaR%20%7C%20Monte%20Carlo%20VaR-orange)
+
 A Markowitz mean-variance optimizer paired with a three-method Value at Risk engine, applied to a five-stock CAC 40 portfolio (Airbus, BNP Paribas, L'Oréal, Sanofi, TotalEnergies). Built to keep the optimizer and the risk engine cleanly separated, so either one can be swapped out or reused on its own.
 
 ## What's inside
