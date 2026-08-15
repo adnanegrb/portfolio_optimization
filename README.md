@@ -65,20 +65,23 @@ pytest tests/ -v
 
 Tests run on synthetic correlated returns rather than live data, so they stay fast and deterministic. They check that optimized weights sum to one, that the minimum-variance portfolio actually has lower volatility than an equal-weight benchmark, that the efficient frontier is monotonic in return, and that the three VaR methods stay within a reasonable range of each other.
 
-portfolio_optimization/
-├── base.py                    PortfolioData and Portfolio dataclasses
-├── data/
-│   └── market_data.py         Price fetching and returns computation
-├── optimization/
-│   └── markowitz.py           Mean-variance optimizer, efficient frontier
-├── risk/
-│   ├── historical.py          Empirical VaR
-│   ├── parametric.py          Variance-covariance VaR
-│   ├── monte_carlo.py         Simulated VaR (Cholesky decomposition)
-│   └── engine.py              Combines all three into one summary
-└── utils/
-    └── visualization.py       Frontier, VaR distribution, sensitivity plots
+## Project structure
 
+```
+portfolio_optimization/
+├── base.py                      PortfolioData and Portfolio dataclasses
+├── data/
+│   └── market_data.py           Price fetching and returns computation
+├── optimization/
+│   └── markowitz.py             Mean-variance optimizer, efficient frontier
+├── risk/
+│   ├── historical.py            Empirical VaR
+│   ├── parametric.py            Variance-covariance VaR
+│   ├── monte_carlo.py           Simulated VaR (Cholesky decomposition)
+│   └── engine.py                Combines all three into one summary
+└── utils/
+    └── visualization.py         Frontier, VaR distribution, sensitivity plots
+```
 
 ## Math
 
