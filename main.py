@@ -1,8 +1,3 @@
-"""End-to-end pipeline: fetch data, optimize the portfolio, run VaR, plot everything.
-
-Run with: python main.py
-"""
-
 import numpy as np
 
 from portfolio_optimization.data.market_data import load_portfolio_data
