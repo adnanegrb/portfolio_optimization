@@ -1,17 +1,8 @@
-"""Parametric VaR: assumes portfolio returns are normally distributed."""
-
 import numpy as np
 from scipy.stats import norm
 
 
 class ParametricVaR:
-    """Computes VaR analytically from the portfolio mean and covariance.
-
-    Faster than the other two methods since it needs no simulation or
-    resampling, but it inherits the normality assumption's weakness in
-    the tails, which the Monte Carlo and historical methods are used to
-    cross-check against.
-    """
 
     def __init__(self, mean_returns, cov_matrix, weights: np.ndarray):
         self.weights = weights
