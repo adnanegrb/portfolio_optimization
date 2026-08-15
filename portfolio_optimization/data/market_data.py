@@ -1,5 +1,3 @@
-"""Fetches historical prices and turns them into daily returns."""
-
 import pandas as pd
 import yfinance as yf
 
