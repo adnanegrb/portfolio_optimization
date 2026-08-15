@@ -1,16 +1,8 @@
-"""Monte Carlo VaR: simulates portfolio paths under correlated multivariate returns."""
-
 import numpy as np
 
 
 class MonteCarloVaR:
-    """Simulates portfolio returns via correlated Gaussian draws (Cholesky decomposition).
-
-    This does not assume the portfolio return itself is normal, only that
-    the underlying asset returns are jointly normal, which is a weaker and
-    more realistic assumption than the parametric method's.
-    """
-
+    
     def __init__(self, mean_returns, cov_matrix, weights: np.ndarray, n_simulations: int = 10_000, seed: int = 42):
         self.mean_returns = mean_returns.values / 252
         self.cov_matrix = cov_matrix.values / 252
