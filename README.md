@@ -2,34 +2,29 @@
 
 ![Language](https://img.shields.io/badge/Language-Python-blue) ![Topic](https://img.shields.io/badge/Topic-Portfolio%20Optimization-purple) ![Domain](https://img.shields.io/badge/Domain-Quantitative%20Finance-darkblue) ![Methods](https://img.shields.io/badge/Methods-Markowitz%20%7C%20Historical%20VaR%20%7C%20Parametric%20VaR%20%7C%20Monte%20Carlo%20VaR-orange)
 
-A Markowitz mean-variance optimizer paired with a three-method Value at Risk engine, applied to a five-stock CAC 40 portfolio (Airbus, BNP Paribas, L'Oréal, Sanofi, TotalEnergies). Built to keep the optimizer and the risk engine cleanly separated, so either one can be swapped out or reused on its own.
+A Markowitz mean-variance optimizer paired with a three-method VaR engine, applied to five CAC 40 stocks (Airbus, BNP Paribas, L'Oréal, Sanofi, TotalEnergies). I kept the optimizer and the risk engine as two separate pieces on purpose, so I could test and reason about each one on its own instead of debugging them tangled together.
 
 ## What's inside
 
 **Portfolio optimization**
-- Markowitz mean-variance optimizer (max Sharpe and min volatility portfolios)
-- Efficient frontier construction via constrained quadratic programming
-- Long-only, fully-invested constraints (no short selling)
+
+Markowitz mean-variance optimizer for the max Sharpe and min volatility portfolios, with the efficient frontier built by solving a constrained quadratic program at each target return. Long only, fully invested, no short selling.
 
 **Risk engine**
-- Historical simulation VaR (empirical, no distributional assumption)
-- Parametric VaR (variance-covariance method, closed-form under normality)
-- Monte Carlo VaR (10,000 correlated simulations via Cholesky decomposition)
-- Expected Shortfall (CVaR) alongside every VaR estimate
+
+Three ways of estimating VaR on the same portfolio: historical simulation (empirical, no distributional assumption), parametric (variance-covariance, closed form under normality), and Monte Carlo (10,000 correlated simulations via Cholesky decomposition). Expected Shortfall (CVaR) comes alongside every VaR estimate, since VaR alone doesn't say how bad the tail actually is.
 
 **Data pipeline**
-- Automated price fetching via yfinance
-- Daily returns computation and annualization
+
+Price fetching via yfinance, daily returns, annualization.
 
 **Visualizations**
-- Efficient frontier with the tangency and minimum-variance portfolios marked
-- Portfolio return distribution with VaR thresholds overlaid
-- VaR comparison across the three methods and confidence levels
-- Sensitivity of portfolio volatility to individual weight shocks
+
+Efficient frontier with the tangency and minimum-variance portfolios marked, the portfolio return distribution with VaR thresholds overlaid, a comparison of the three VaR methods across confidence levels, and how portfolio volatility responds to shocking individual weights.
 
 ## Quick start
 
-```
+```bash
 pip install -r requirements.txt
 python main.py
 ```
@@ -64,7 +59,7 @@ Each method also exposes `.expected_shortfall(confidence)` for the average loss 
 
 ## Running tests
 
-```
+```bash
 pytest tests/ -v
 ```
 
@@ -72,41 +67,40 @@ Tests run on synthetic correlated returns rather than live data, so they stay fa
 
 ## Project structure
 
-```
 portfolio_optimization/
-├── base.py                      PortfolioData and Portfolio dataclasses
+├── base.py PortfolioData and Portfolio dataclasses
 ├── data/
-│   └── market_data.py           Price fetching and returns computation
+│ └── market_data.py Price fetching and returns computation
 ├── optimization/
-│   └── markowitz.py             Mean-variance optimizer, efficient frontier
+│ └── markowitz.py Mean-variance optimizer, efficient frontier
 ├── risk/
-│   ├── historical.py            Empirical VaR
-│   ├── parametric.py            Variance-covariance VaR
-│   ├── monte_carlo.py           Simulated VaR (Cholesky decomposition)
-│   └── engine.py                Combines all three into one summary
+│ ├── historical.py Empirical VaR
+│ ├── parametric.py Variance-covariance VaR
+│ ├── monte_carlo.py Simulated VaR (Cholesky decomposition)
+│ └── engine.py Combines all three into one summary
 └── utils/
-    └── visualization.py         Frontier, VaR distribution, sensitivity plots
-```
+└── visualization.py Frontier, VaR distribution, sensitivity plots
+
 
 ## Math
 
-**Portfolio return and volatility**, given weights $w$, expected returns $\mu$, and covariance matrix $\Sigma$:
+Portfolio return and volatility, given weights $w$, expected returns $\mu$, and covariance matrix $\Sigma$:
 
 $$R_p = w^\top \mu, \qquad \sigma_p = \sqrt{w^\top \Sigma w}$$
 
-**Max Sharpe optimization** solves, subject to $\sum w_i = 1$ and $w_i \geq 0$:
+Max Sharpe optimization solves, subject to $\sum w_i = 1$ and $w_i \geq 0$:
 
 $$\max_w \frac{R_p - r_f}{\sigma_p}$$
 
-**Parametric VaR** assumes portfolio returns are normal, so the loss at confidence level $c$ is:
+Parametric VaR assumes portfolio returns are normal, so the loss at confidence level $c$ is:
 
-$$\text{VaR}_c = -(\mu_p + z_{1-c} \, \sigma_p), \qquad z_{1-c} = \Phi^{-1}(1-c)$$
+$$\text{VaR}_c = -(\mu_p + z_{1-c}\,\sigma_p), \qquad z_{1-c} = \Phi^{-1}(1-c)$$
 
-**Monte Carlo VaR** draws correlated asset returns using the Cholesky factor $L$ of $\Sigma$, so that $LL^\top = \Sigma$:
+Monte Carlo VaR draws correlated asset returns using the Cholesky factor $L$ of $\Sigma$, so that $LL^\top = \Sigma$:
 
 $$r_{\text{sim}} = \mu + Lz, \qquad z \sim \mathcal{N}(0, I)$$
 
-and then takes the empirical percentile of the resulting simulated portfolio returns, exactly as the historical method does on real data.
+and then takes the empirical percentile of the resulting simulated portfolio returns, the same way the historical method does on real data.
 
 ## License
 
