@@ -1,18 +1,10 @@
-"""Markowitz mean-variance optimization: efficient frontier and max Sharpe portfolio."""
-
 import numpy as np
 from scipy.optimize import minimize
-
 from portfolio_optimization.base import PortfolioData, Portfolio
 
 
 class MarkowitzOptimizer:
-    """Solves for the efficient frontier and the tangency (max Sharpe) portfolio.
-
-    Weights are constrained to sum to 1 with no short selling, which matches
-    a realistic long-only equity mandate.
-    """
-
+    
     def __init__(self, data: PortfolioData, risk_free_rate: float = 0.02):
         self.data = data
         self.risk_free_rate = risk_free_rate
@@ -43,7 +35,7 @@ class MarkowitzOptimizer:
         return Portfolio(weights=weights, expected_return=ret, volatility=vol, sharpe_ratio=sharpe)
 
     def min_volatility_portfolio(self) -> Portfolio:
-        """Finds the global minimum variance portfolio."""
+        
         bounds = tuple((0.0, 1.0) for _ in range(self.n))
         constraints = {"type": "eq", "fun": lambda w: np.sum(w) - 1.0}
         x0 = np.repeat(1.0 / self.n, self.n)
@@ -58,7 +50,7 @@ class MarkowitzOptimizer:
         return Portfolio(weights=weights, expected_return=ret, volatility=vol, sharpe_ratio=sharpe)
 
     def efficient_frontier(self, n_points: int = 50) -> list[Portfolio]:
-        """Sweeps target returns and finds the minimum-variance portfolio for each."""
+        
         min_ret = self.data.mean_returns.min()
         max_ret = self.data.mean_returns.max()
         target_returns = np.linspace(min_ret, max_ret, n_points)
